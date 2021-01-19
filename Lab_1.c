@@ -1,52 +1,64 @@
 //
-// Created by Great_Society on 11.11.2020.
-//
-//Дана строка из нескольких слов. Слова отделяются друг от друга
-//пробелами или запятыми. Вывести слова, начинающиеся и
-//заканчивающиеся одной и той же буквой.
+// Created by Дмитрий Ярошевич on 1/19/21.
 //
 
 #include <stdio.h>
-#include <ctype.h>
-#include <string.h>
+#include <stdlib.h>
+
+
+char equiall (char *input);
+int isBeta (char charc);
+int toUp (char charc);
 
 int main(){
-    char inputMassive [100], intermediateMassive[100];
-    char*pInputMassive = inputMassive;
-    int N,N_1;
-    int X = 0;
-    int putFlag = 0;
-    puts("Please write any sentence on English, and no more than 99 characters:");
-    fgets(pInputMassive,100,stdin); // Так мы уверены, что пользователь ничего не перезапишет.
-    N = strlen(pInputMassive);
 
-    for (int i = 0; i <= N; i++){
-        // Если элемент массива буква, то записываем в массив для вывода слова
-        if (isalpha(inputMassive[i])){
-            intermediateMassive[X] = inputMassive[i];
-            X++;
-        }
-        // Если нет, то узнаем длину массива для вывода
-        else {
+    char *answer = malloc(2);
+    char *inputString = malloc(128);
 
-            N_1 = strlen(intermediateMassive);
+    do {
 
-            /* Если условия выполняется: 1-й и последний элемент массива равны
-             * и массив не состоит из одного символа, то выводим на печать*/
+        puts("Please, write a sentence:");
+        fgets(inputString, 128, stdin);
 
-            if(toupper(intermediateMassive[0]) == toupper(intermediateMassive[N_1-1]) && N_1>1){
-                puts(intermediateMassive);
-                putFlag++;
+        equiall(inputString);
+
+        puts("Something else?(Y/N)");
+        fgets(answer,2,stdin);
+        getchar();
+
+    }while(toUp(*answer)=='Y');
+}
+
+char equiall (char *input){
+
+    int i;
+    int j;
+
+    for(i = 0 ;*(input+i)!= '\0';i++) {
+        if (isBeta(input[i])) {
+            j = i;
+            for(; isBeta(*(input + i)); i++) {
             }
-
-            // Посел чего обнуляем счетчик элементов массива и сам массив для печати
-
-            memset(intermediateMassive,0, sizeof(intermediateMassive));
-            X = 0;
+            if ((toUp(input[j]) == toUp(input[i - 1]))  && (i-1-j)>0){
+                for (int z = j; z < i; z++) {
+                    printf("%c", input[z]);
+                }
+                putchar('\n');
+            }
         }
-    }
-    if (putFlag == 0){
-        puts("Sorry, your message doesn't meet the conditions or doesn't contain the search words");
     }
     return 0;
+}
+
+int isBeta (char charc){
+    return (charc >= 'A' && charc <= 'Z')||(charc >= 'a' && charc <= 'z') ? 1:0;
+}
+
+int toUp (char charc){
+
+     if ((charc>='A')&&(charc<='Z')) return charc;
+
+     else{
+         return (isBeta(charc))? charc-32: 0;
+     }
 }
